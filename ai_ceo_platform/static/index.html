@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>AI CEO Platform</title>
+    <style>
+        :root {
+            --bg: #030508;
+            --p: #0a0d12;
+            --b: #1a1f28;
+            --t: #e2e8f0;
+            --a: #3b82f6;
+            --v: #8b5cf6;
+            --g: #10b981;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Inter, system-ui, sans-serif;
+        }
+        body {
+            background: var(--bg);
+            color: var(--t);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        header {
+            height: 48px;
+            background: var(--p);
+            border-bottom: 1px solid var(--b);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 12px;
+        }
+        .logo {
+            font-weight: 700;
+            color: var(--a);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 16px;
+        }
+        .st {
+            font-size: 11px;
+            padding: 3px 8px;
+            background: #111;
+            border-radius: 10px;
+        }
+        main {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            padding-bottom: 55px;
+        }
+        .grid {
+            display: grid;
+            gap: 8px;
+        }
+        .g2 {
+            grid-template-columns: 1fr;
+        }
+        @media(min-width: 768px) {
+            body {
+                flex-direction: row;
+            }
+            header {
+                display: none;
+            }
+            main {
+                flex: 1;
+                padding: 14px;
+            }
+            .g2 {
+                grid-template-columns: 2fr 1fr;
+            }
+        }
+        .c {
+            background: var(--p);
+            border: 1px solid var(--b);
+            border-radius: 6px;
+            padding: 8px;
+            margin-bottom: 6px;
+        }
+        h2 {
+            margin: 0 0 4px;
+            font-size: 11px;
+            color: #64748b;
+            text-transform: uppercase;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 6px;
+            margin: 2px 0;
+            background: #080b10;
+            border: 1px solid #222;
+            color: #fff;
+            border-radius: 5px;
+            font-size: 11px;
+        }
+        button {
+            background: var(--a);
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+        .v {
+            background: var(--v);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10px;
+        }
+        th, td {
+            padding: 4px;
+            text-align: left;
+            border-bottom: 1px solid var(--b);
+        }
+        .b {
+            padding: 1px 4px;
+            border-radius: 2px;
+            font-size: 8px;
+        }
+        .bp {
+            background: #f59e0b33;
+            color: #f59e0b;
+        }
+        .bs {
+            background: #10b98133;
+            color: #10b981;
+        }
+        nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 48px;
+            background: var(--p);
+            border-top: 1px solid var(--b);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 10;
+        }
+        .n {
+            background: none;
+            color: #64748b;
+            font-size: 8px;
+            padding: 2px;
+            flex: 1;
+            text-align: center;
+        }
+        .n.a {
+            color: var(--a);
+        }
+        .n span {
+            font-size: 14px;
+            display: block;
+        }
+        .tab {
+            display: none;
+        }
+        .tab.a {
+            display: block;
+        }
+        .sec {
+            background: #080b10;
+            border: 1px solid #222;
+            padding: 6px;
+            margin: 4px 0;
+            border-radius: 4px;
+            font-size: 10px;
+        }
+        .sec b {
+            color: var(--t);
+        }
+        .sec i {
+            color: #64748b;
+        }
+        #log {
+            height: 90px;
+            background: #000;
+            padding: 4px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 9px;
+            color: var(--g);
+        }
+        label {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+        }
+        input[type="checkbox"] {
+            width: auto;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">👑 AI CEO Platform</div>
+        <div class="st" id="conn">🔴 Offline</div>
+    </header>
+    
+    <main>
+        <!-- Home Tab -->
+        <div id="t-home" class="tab a">
+            <div class="grid g2">
+                <div class="c">
+                    <h2>🚀 Command</h2>
+                    <div style="display:flex;gap:4px">
+                        <input id="cmd" placeholder="Type command...">
+                        <button class="v" onclick="sendCmd(document.getElementById('cmd').value)">▶</button>
+                    </div>
+                </div>
+                <div class="c">
+                    <h2>📡 Log</h2>
+                    <div id="log"></div>
+                </div>
+                <div class="c" style="text-align:center">
+                    <h2>🧠 Status</h2>
+                    <div style="font-size:1.5rem">🤖</div>
+                    <h3 id="aSt">Idle</h3>
+                </div>
+                <div class="c">
+                    <h2>📊 Stats</h2>
+                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;text-align:center">
+                        <div><b style="color:var(--g)">Tasks</b><p id="sT">0</p></div>
+                        <div><b style="color:var(--a)">Pending</b><p id="sP">0</p></div>
+                        <div><b style="color:var(--v)">Mem</b><p id="sM">0</p></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tasks Tab -->
+        <div id="t-tasks" class="tab">
+            <div class="c">
+                <h2>📋 Tasks</h2>
+                <div style="overflow-x:auto">
+                    <table>
+                        <thead>
+                            <tr><th>Task</th><th>Project</th><th>Agent</th><th>Score</th><th>Status</th></tr>
+                        </thead>
+                        <tbody id="tL"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Projects Tab -->
+        <div id="t-projects" class="tab">
+            <div class="c">
+                <h2>📁 Projects</h2>
+                <div style="display:flex;gap:4px;flex-wrap:wrap">
+                    <input id="pN" placeholder="Name" style="flex:1">
+                    <input id="pI" placeholder="Instructions" style="flex:2">
+                    <button onclick="addP()" style="width:auto">+ Add</button>
+                </div>
+                <div id="pL" style="margin-top:4px"></div>
+            </div>
+        </div>
+        
+        <!-- Approvals Tab -->
+        <div id="t-approvals" class="tab">
+            <div class="c">
+                <h2>✅ Approvals</h2>
+                <div id="aL"></div>
+            </div>
+        </div>
+        
+        <!-- Agents Tab -->
+        <div id="t-agents" class="tab">
+            <div class="c">
+                <h2>🤖 Agents & Skills</h2>
+                <div style="display:flex;gap:4px;flex-wrap:wrap">
+                    <input id="agN" placeholder="Name" style="flex:1">
+                    <input id="agR" placeholder="Role" style="flex:1">
+                    <button onclick="addAg()" style="width:auto">+ Spawn</button>
+                </div>
+                <div id="agL" style="margin-top:4px"></div>
+            </div>
+        </div>
+        
+        <!-- Finance Tab -->
+        <div id="t-finance" class="tab">
+            <div class="c">
+                <h2>💰 Invoices/Estimates</h2>
+                <div id="fL"></div>
+            </div>
+        </div>
+        
+        <!-- Memory Tab -->
+        <div id="t-memory" class="tab">
+            <div class="c">
+                <h2>🧠 Memory & Knowledge</h2>
+                <button onclick="pruneMem()">⚡ Prune Low Relevance</button>
+                <table style="margin-top:4px">
+                    <thead>
+                        <tr><th>Type</th><th>Preview</th><th>Rel</th></tr>
+                    </thead>
+                    <tbody id="mL"></tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Integrations Tab -->
+        <div id="t-integ" class="tab">
+            <div class="c">
+                <h2>📱 WhatsApp & Telegram</h2>
+                <input id="waT" type="password" placeholder="WA Token">
+                <input id="waP" placeholder="WA Phone ID">
+                <input id="tgT" type="password" placeholder="TG Token">
+                <button onclick="testInt('wa')">📱 Test WA</button>
+                <button onclick="testInt('tg')">📱 Test TG</button>
+            </div>
+            <div class="c">
+                <h2>📧 Email</h2>
+                <input id="emU" placeholder="Gmail">
+                <input id="emP" type="password" placeholder="App Password">
+                <button onclick="testInt('email')">📧 Test Email</button>
+            </div>
+        </div>
+        
+        <!-- Settings Tab -->
+        <div id="t-settings" class="tab">
+            <div class="c">
+                <h2>⚙️ LLM & System</h2>
+                <select id="prov">
+                    <option value="openai">OpenAI</option>
+                    <option value="anthropic">Anthropic</option>
+                    <option value="google">Google</option>
+                    <option value="groq">Groq</option>
+                    <option value="ollama">Local/Ollama</option>
+                </select>
+                <input id="key" type="password" placeholder="API Key">
+                <input id="mod" value="gpt-4o" placeholder="Model">
+                <input id="loc" value="http://localhost:11434/v1" placeholder="Local URL">
+                <div style="display:flex;gap:8px;margin:3px 0">
+                    <label><input type="checkbox" id="off"> Offline</label>
+                    <label><input type="checkbox" id="auto"> Auto-Exec</label>
+                </div>
+                <button onclick="saveS()">💾 Save & Apply</button>
+            </div>
+        </div>
+    </main>
+    
+    <nav>
+        <button class="n a" onclick="tab('home')"><span>🏠</span>Home</button>
+        <button class="n" onclick="tab('tasks')"><span>📋</span>Tasks</button>
+        <button class="n" onclick="tab('approvals')"><span>✅</span>Approvals</button>
+        <button class="n" onclick="tab('agents')"><span>🤖</span>Agents</button>
+        <button class="n" onclick="tab('integ')"><span>🔗</span>Integ</button>
+        <button class="n" onclick="tab('settings')"><span>⚙️</span>Settings</button>
+    </nav>
+    
+    <script>
+        const ws = new WebSocket(`${location.protocol === 'https:' ? 'wss:' : 'ws:'}//${location.host}/ws`);
+        const logEl = document.getElementById('log');
+        
+        ws.onopen = () => {
+            document.getElementById('conn').textContent = '🟢 Online';
+            document.getElementById('conn').style.color = 'var(--g)';
+            refresh('home');
+        };
+        
+        ws.onclose = () => {
+            document.getElementById('conn').textContent = '🔴 Offline';
+            document.getElementById('conn').style.color = '#ef4444';
+        };
+        
+        ws.onmessage = e => {
+            const d = JSON.parse(e.data);
+            if (d.type === 'resp') {
+                log(`✅ ${d.data.status}: ${d.data.thought || 'Done'}`);
+                document.getElementById('aSt').innerText = d.data.status;
+                setTimeout(() => document.getElementById('aSt').innerText = 'Idle', 2000);
+                refresh('tasks');
+                refresh('approvals');
+            }
+        };
+        
+        function log(t) {
+            logEl.innerHTML += `<div>[${new Date().toLocaleTimeString()}] ${t}</div>`;
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+        
+        function tab(id) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('a'));
+            document.getElementById(`t-${id}`).classList.add('a');
+            document.querySelectorAll('nav button').forEach(n => n.classList.remove('a'));
+            event.currentTarget.classList.add('a');
+            refresh(id);
+        }
+        
+        function refresh(id) {
+            if (id === 'tasks') {
+                fetch('/api/tasks').then(r => r.json()).then(t => {
+                    document.getElementById('tL').innerHTML = t.map(x => 
+                        `<tr><td>${x.d?.slice(0, 25)}...</td><td>${x.p || '-'}</td><td>${x.a || 'CEO'}</td><td>${x.sc}</td><td><span class="b ${x.s === 'completed' ? 'bs' : 'bp'}">${x.s}</span></td></tr>`
+                    ).join('');
+                    document.getElementById('sT').innerText = t.filter(x => x.s === 'completed').length;
+                    document.getElementById('sP').innerText = t.filter(x => x.s === 'pending').length;
+                });
+            }
+            if (id === 'approvals') {
+                fetch('/api/approvals').then(r => r.json()).then(a => {
+                    document.getElementById('aL').innerHTML = a.length ? a.map(x => 
+                        `<div class="sec"><b>${x.d}</b><br><button onclick="app('${x.id}', '${x.d.replace(/'/g, "\\'")}')">✅ Approve & Run</button></div>`
+                    ).join('') : '<p style="font-size:10px;color:#64748b">No pending approvals</p>';
+                });
+            }
+            if (id === 'projects') {
+                fetch('/api/projects').then(r => r.json()).then(p => {
+                    document.getElementById('pL').innerHTML = p.map(x => 
+                        `<div class="sec"><b>${x.n}</b> (${x.s})<br><i>${x.i || 'No instructions'}</i></div>`
+                    ).join('');
+                });
+            }
+            if (id === 'agents') {
+                fetch('/api/agents').then(r => r.json()).then(a => {
+                    document.getElementById('agL').innerHTML = a.map(x => 
+                        `<div class="sec"><b>${x.n}</b> | ${x.r} | ${x.p || 'Global'} | Skills: ${x.sk?.join(', ') || 'None'}</div>`
+                    ).join('');
+                });
+            }
+            if (id === 'finance') {
+                fetch('/api/finance').then(r => r.json()).then(i => {
+                    document.getElementById('fL').innerHTML = i.map(x => 
+                        `<div class="sec">${x.tasks} Tasks | $${x.amt.toFixed(2)} | ${x.st}</div>`
+                    ).join('');
+                });
+            }
+            if (id === 'memory') {
+                fetch('/api/memory').then(r => r.json()).then(m => {
+                    document.getElementById('mL').innerHTML = m.map(x => 
+                        `<tr><td>${x.t}</td><td>${x.c}</td><td>${x.r.toFixed(2)}</td></tr>`
+                    ).join('');
+                    document.getElementById('sM').innerText = m.length;
+                });
+            }
+            if (id === 'integ' || id === 'settings') {
+                fetch('/api/settings').then(r => r.json()).then(s => {
+                    document.getElementById('prov').value = s.PROVIDER || 'openai';
+                    document.getElementById('key').value = s.API_KEY ? '********' : '';
+                    document.getElementById('mod').value = s.MODEL || 'gpt-4o';
+                    document.getElementById('loc').value = s.LOCAL_URL || '';
+                    document.getElementById('off').checked = s.OFFLINE || false;
+                    document.getElementById('auto').checked = s.AUTO_APPROVE || false;
+                    document.getElementById('waT').value = s.WA_TOKEN || '';
+                    document.getElementById('waP').value = s.WA_PHONE || '';
+                    document.getElementById('tgT').value = s.TG_TOKEN || '';
+                    document.getElementById('emU').value = s.EMAIL_USER || '';
+                    document.getElementById('emP').value = s.EMAIL_PASS || '';
+                });
+            }
+        }
+        
+        function sendCmd(t) {
+            if (!t) return;
+            log(`🗣️ You: ${t}`);
+            document.getElementById('aSt').innerText = "Thinking...";
+            ws.send(JSON.stringify({cmd: t}));
+            document.getElementById('cmd').value = '';
+        }
+        
+        document.getElementById('cmd').addEventListener('keypress', e => {
+            if (e.key === 'Enter') sendCmd(document.getElementById('cmd').value);
+        });
+        
+        function app(id, desc) {
+            fetch('/api/approve', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({id, d: desc})
+            }).then(() => refresh('approvals'));
+        }
+        
+        function addP() {
+            fetch('/api/projects', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    n: document.getElementById('pN').value,
+                    i: document.getElementById('pI').value
+                })
+            }).then(() => refresh('projects'));
+        }
+        
+        function addAg() {
+            fetch('/api/agents', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    n: document.getElementById('agN').value,
+                    r: document.getElementById('agR').value
+                })
+            }).then(() => refresh('agents'));
+        }
+        
+        function pruneMem() {
+            fetch('/api/memory/prune', {method: 'POST'}).then(() => refresh('memory'));
+        }
+        
+        function testInt(t) {
+            const to = prompt("Recipient or 'test':");
+            fetch('/api/test_int', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({type: t, to: to || 'test'})
+            }).then(r => r.json()).then(d => alert(JSON.stringify(d, null, 2)));
+        }
+        
+        function saveS() {
+            const p = {
+                PROVIDER: document.getElementById('prov').value,
+                API_KEY: document.getElementById('key').value,
+                MODEL: document.getElementById('mod').value,
+                LOCAL_URL: document.getElementById('loc').value,
+                OFFLINE: document.getElementById('off').checked,
+                AUTO_APPROVE: document.getElementById('auto').checked,
+                WA_TOKEN: document.getElementById('waT').value,
+                WA_PHONE: document.getElementById('waP').value,
+                TG_TOKEN: document.getElementById('tgT').value,
+                EMAIL_USER: document.getElementById('emU').value,
+                EMAIL_PASS: document.getElementById('emP').value
+            };
+            fetch('/api/settings', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(p)
+            }).then(() => alert('✅ Saved & Applied!'));
+        }
+    </script>
+</body>
+</html>
